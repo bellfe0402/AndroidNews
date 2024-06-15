@@ -12,7 +12,6 @@ import com.seojongcheol.androidnews.databinding.ActivityWebviewBinding
 
 class WebViewActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWebviewBinding
-    private var isError = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,20 +28,18 @@ class WebViewActivity : AppCompatActivity() {
                     error: WebResourceError?
                 ) {
                     super.onReceivedError(view, request, error)
-                    isError = true
-                    showErrorView()
+                    if (request?.isForMainFrame == true) {
+                        showErrorView()
+                    }
                 }
 
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
-                    if (!isError) {
-                        hideErrorView()
-                    }
+                    hideErrorView()
                 }
             }
             binding.webView.loadUrl(url)
         } else {
-            isError = true
             showErrorView()
         }
     }
