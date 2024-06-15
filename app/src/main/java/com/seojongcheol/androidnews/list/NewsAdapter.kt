@@ -1,5 +1,6 @@
 package com.seojongcheol.androidnews.list
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.seojongcheol.androidnews.databinding.ItemNewsBinding
 import com.seojongcheol.androidnews.utils.TimeUtils
+import com.seojongcheol.androidnews.webview.WebViewActivity
 
 class NewsAdapter : ListAdapter<NewsItem, NewsAdapter.NewsViewHolder>(ArticleDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
@@ -30,6 +32,13 @@ class NewsAdapter : ListAdapter<NewsItem, NewsAdapter.NewsViewHolder>(ArticleDif
                 Glide.with(binding.newsImage).load("").into(binding.newsImage)
             } else {
                 Glide.with(binding.newsImage).load(article.urlToImage).into(binding.newsImage)
+            }
+            binding.root.setOnClickListener {
+                val context = binding.root.context
+                val intent = Intent(context, WebViewActivity::class.java).apply {
+                    putExtra("URL", article.url)
+                }
+                context.startActivity(intent)
             }
         }
     }
