@@ -1,6 +1,7 @@
 package com.seojongcheol.androidnews.list
 
 import android.content.Intent
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -19,22 +20,34 @@ class NewsAdapter : ListAdapter<NewsItem, NewsAdapter.NewsViewHolder>(ArticleDif
     }
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
-        val article = getItem(position)
-        holder.bind(article)
+        val newsItem = getItem(position)
+        holder.bind(newsItem)
     }
 
-    class NewsViewHolder(private val binding: ItemNewsBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(article: NewsItem) {
-            binding.newsTitle.text = article.title
-            binding.newsDescription.text = article.description
-            binding.publishedAt.text = TimeUtils.convertTime(article.publishedAt)
-            Glide.with(binding.newsImage).load(article.urlToImage).placeholder(R.mipmap.ic_launcher).into(binding.newsImage)
+    inner class NewsViewHolder(private val binding: ItemNewsBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(newsItem: NewsItem) {
+            binding.newsTitle.text = newsItem.title
+            binding.newsDescription.text = newsItem.description
+            binding.publishedAt.text = TimeUtils.convertTime(newsItem.publishedAt)
+            Glide.with(binding.newsImage).load(newsItem.urlToImage).placeholder(R.mipmap.ic_launcher).into(binding.newsImage)
             binding.root.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val item = getItem(position)
+                    item.isVisited = true
+                }
                 val context = binding.root.context
                 val intent = Intent(context, WebViewActivity::class.java).apply {
-                    putExtra("URL", article.url)
+                    putExtra("URL", newsItem.url)
                 }
                 context.startActivity(intent)
+                notifyItemChanged(position)
+            }
+
+            if (newsItem.isVisited) {
+                binding.newsTitle.setTextColor(Color.RED)
+            } else {
+                binding.newsTitle.setTextColor(Color.BLACK)
             }
         }
     }

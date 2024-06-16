@@ -9,5 +9,6 @@ data class NewsItem(
     val description: String?,
     val publishedAt: String,
     val urlToImage: String?,
-    val url: String
+    val url: String,
+    var isVisited: Boolean = false
 )
