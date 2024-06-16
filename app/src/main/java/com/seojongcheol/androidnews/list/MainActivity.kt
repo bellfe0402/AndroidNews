@@ -1,11 +1,13 @@
 package com.seojongcheol.androidnews.list
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.seojongcheol.androidnews.R
 import com.seojongcheol.androidnews.databinding.ActivityMainBinding
@@ -16,7 +18,8 @@ import java.util.Date
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val newsViewModel: MainViewModel by viewModels()
-    private val newsAdapter = NewsAdapter()
+    private val listNewsAdapter = ListNewsAdapter()
+    private val gridNewsAdapter = GridNewsAdapter()
     private var lastBackPressedTime = 0L
     private val finishTime = 1000L
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,14 +46,33 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = newsAdapter
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE || resources.configuration.screenWidthDp >= 600) {
+                layoutManager = GridLayoutManager(this@MainActivity, 3)
+                adapter = gridNewsAdapter
+            } else {
+                layoutManager = LinearLayoutManager(this@MainActivity)
+                adapter = listNewsAdapter
+            }
         }
     }
 
     private fun observeNews() {
         newsViewModel.news.observe(this) { articles ->
-            newsAdapter.submitList(articles)
+            listNewsAdapter.submitList(articles)
+            gridNewsAdapter.submitList(articles)
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        updateLayoutManager(newConfig.orientation, newConfig.screenWidthDp)
+    }
+
+    private fun updateLayoutManager(orientation: Int, screenWidthDp: Int) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE && screenWidthDp >= 600) {
+            binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
+        } else {
+            binding.recyclerView.layoutManager = LinearLayoutManager(this)
         }
     }
 }

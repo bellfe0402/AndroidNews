@@ -9,13 +9,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.seojongcheol.androidnews.R
-import com.seojongcheol.androidnews.databinding.ItemNewsBinding
+import com.seojongcheol.androidnews.databinding.ItemNewsGridBinding
 import com.seojongcheol.androidnews.utils.TimeUtils
 import com.seojongcheol.androidnews.webview.WebViewActivity
 
-class NewsAdapter : ListAdapter<NewsItem, NewsAdapter.NewsViewHolder>(ArticleDiffCallback()) {
+class GridNewsAdapter : ListAdapter<NewsItem, GridNewsAdapter.NewsViewHolder>(ArticleDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
-        val binding = ItemNewsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemNewsGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return NewsViewHolder(binding)
     }
 
@@ -24,7 +24,7 @@ class NewsAdapter : ListAdapter<NewsItem, NewsAdapter.NewsViewHolder>(ArticleDif
         holder.bind(newsItem)
     }
 
-    inner class NewsViewHolder(private val binding: ItemNewsBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class NewsViewHolder(private val binding: ItemNewsGridBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(newsItem: NewsItem) {
             binding.newsTitle.text = newsItem.title
             binding.newsDescription.text = newsItem.description
