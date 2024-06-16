@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.seojongcheol.androidnews.R
 import com.seojongcheol.androidnews.databinding.ItemNewsBinding
 import com.seojongcheol.androidnews.utils.TimeUtils
 import com.seojongcheol.androidnews.webview.WebViewActivity
@@ -27,12 +28,7 @@ class NewsAdapter : ListAdapter<NewsItem, NewsAdapter.NewsViewHolder>(ArticleDif
             binding.newsTitle.text = article.title
             binding.newsDescription.text = article.description
             binding.publishedAt.text = TimeUtils.convertTime(article.publishedAt)
-            if (article.urlToImage.isNullOrBlank() || article.urlToImage.contains(".gif")) {
-                //TODO: urlToImage 없는 경우에 대한 예외 처리 필요
-                Glide.with(binding.newsImage).load("").into(binding.newsImage)
-            } else {
-                Glide.with(binding.newsImage).load(article.urlToImage).into(binding.newsImage)
-            }
+            Glide.with(binding.newsImage).load(article.urlToImage).placeholder(R.mipmap.ic_launcher).into(binding.newsImage)
             binding.root.setOnClickListener {
                 val context = binding.root.context
                 val intent = Intent(context, WebViewActivity::class.java).apply {
